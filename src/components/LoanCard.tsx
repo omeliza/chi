@@ -32,10 +32,10 @@ type CardType = {
 export const LoanCard: FC<CardType> = ({ title, available, amount, ltv, id }) => {
 
   const [open, setOpen] = useState(false);
+  const [avail, setAvail] = useState<number>(available);
+  const [invested, setInvested] = useState('none');
   const handleOpen = () => setOpen(true);
   const handleClose = () => setOpen(false);
-
-  const [avail, setAvail] = useState<number>(available);
 
   const dispatch = useAppDispatch();
 
@@ -46,6 +46,7 @@ export const LoanCard: FC<CardType> = ({ title, available, amount, ltv, id }) =>
 
   const submitHandler = () => {
     dispatch(changeAvailability({id, avail}));
+    setInvested('block');
     handleClose();
   }
   return (
@@ -67,7 +68,11 @@ export const LoanCard: FC<CardType> = ({ title, available, amount, ltv, id }) =>
             Available: ${available}
           </Typography>
         </Box>
-        <Box>
+        <Box sx={{ position: 'relative' }}>
+          <Typography 
+            sx={{ display: `${invested}`, position: 'absolute', top: '-45px', right: '15px', color: '#1565C0' }}>
+            Invested
+          </Typography>
           <Button 
           variant='contained' 
           sx={{ display: 'flex', alignSelf: 'flex-end', ml: 1 }} 
@@ -82,45 +87,45 @@ export const LoanCard: FC<CardType> = ({ title, available, amount, ltv, id }) =>
         onClose={handleClose}
       >
         <Box sx={style}>
-      <Typography 
-        variant='h6' 
-        component='h2'>
-        Invest in {title}
-      </Typography>
-      <Typography  sx={{ mt: 2 }}>
-        Amount available: ${available}
-      </Typography>
-      <Typography  sx={{ mt: 2 }}>
-        Amount: ${amount}
-      </Typography>
-      <Typography  sx={{ mt: 2 }}>
-        LTV: ${ltv}
-      </Typography>
-      <Box 
-        component='form' 
-        sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center'  }}
-      >
-        <TextField
-          value={avail}
-          label='Number'
-          type='number'
-          InputLabelProps={{
-            shrink: true,
-          }}
-          InputProps={{ inputProps: { min: '100', max: `${available}`} } }
-          sx={{ mt: 2 }}
-          onChange={(e) => onChangehandler(Number(e.target.value))}
-        />
-        <Button 
-          variant='contained' 
-          sx={{ mb: -1 }}
-          onClick={submitHandler}
-          disabled={available <= 0}
-        >
-          INVEST
-        </Button>
-      </Box>
-    </Box>
+          <Typography 
+            variant='h6' 
+            component='h2'>
+            Invest in {title}
+          </Typography>
+          <Typography  sx={{ mt: 2 }}>
+            Amount available: ${available}
+          </Typography>
+          <Typography  sx={{ mt: 2 }}>
+            Amount: ${amount}
+          </Typography>
+          <Typography  sx={{ mt: 2 }}>
+            LTV: ${ltv}
+          </Typography>
+          <Box 
+            component='form' 
+            sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center'  }}
+          >
+            <TextField
+              value={avail}
+              label='Number'
+              type='number'
+              InputLabelProps={{
+                shrink: true,
+              }}
+              InputProps={{ inputProps: { min: '100', max: `${available}`} } }
+              sx={{ mt: 2 }}
+              onChange={(e) => onChangehandler(Number(e.target.value))}
+            />
+            <Button 
+              variant='contained' 
+              sx={{ mb: -1 }}
+              onClick={submitHandler}
+              disabled={available <= 0}
+            >
+              INVEST
+            </Button>
+          </Box>
+        </Box>
       </Modal>
     </>
   );
